@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.dao.OrderDao">
+
+	<insert id="insertOrder" useGeneratedKeys="true" keyProperty="id" parameterType="com.shop.entity.Order" >
+	insert into `shop`.`order`
+		(order_no, state, user_id, address_id, count_price, count_number, open) 
+	VALUES
+		(#{order_no},#{state},#{user.id},#{address.id},#{count_price},#{count_number},#{open})
+	</insert>
+	
+	<insert id="inserSubOrder" useGeneratedKeys="true" keyProperty="id" parameterType="com.shop.entity.SubOrder" >
+	insert into sub_order
+		(order_id,goods_detail_id,number,open)
+	values
+		(#{order.id},#{goodsDetail.id},#{number},#{open})
+	</insert>
+	
+	<update id="updateSubOrderNumOrGoodsDetail" parameterType="com.shop.entity.SubOrder">
+		update
+			sub_order
+		<set>     
+	        <if test="number!=null ">     
+	            number = #{number},      
+	        </if>  
+	        <if test="goodsDetail!=null ">     
+	            goods_detail_id = #{goodsDetail.id},      
+	        </if>       
+    	</set>     
+    	WHERE id = #{id}; 
+	</update>
+	
+	<update id="updateSubOrderOpen" parameterType="com.shop.entity.SubOrder">
+		update
+			sub_order
+		<set>     
+	        <if test="open!=null ">     
+	            open = #{open},      
+	        </if>    
+    	</set>     
+    	WHERE id = #{id}; 
+	</update>
+	
+	<update id="updateOrderNumPriOpen" parameterType="com.shop.entity.Order">
+		update
+			`shop`.`order`
+		<set>     
+	        <if test="open!=null ">     
+	            open = #{open},      
+	        </if>  
+	         <if test="count_price!=null ">     
+	            count_price = #{count_price},      
+	        </if>  
+	         <if test="count_number!=null ">     
+	            count_number = #{count_number},      
+	        </if>    
+    	</set>     
+    	WHERE id = #{id}; 
+	</update>
+	
+	<update id="updateOrderState" parameterType="com.shop.entity.Order">
+		update
+			order
+		<set>     
+	        <if test="state!=null ">     
+	            state = #{state},      
+	        </if>    
+    	</set>     
+    	WHERE id = #{id}; 
+	</update>
+	
+	<resultMap type="com.shop.entity.Order" id="OrderResultMap">
+   		 <id property="id" column="id"/>
+		 <result property="order_no" column="order_no"/>
+		 <result property="state" column="state"/>
+		 <result property="count_price" column="count_price"/>
+		 <result property="order_no" column="order_no"/>
+		 <result property="count_number" column="count_number"/>
+		 <result property="open" column="open"/>
+		 <result property="create_date" column="create_date"/>
+         
+         <association property="user" column="user_id" javaType="com.shop.entity.User">
+             <id property="id" column="user_id"/>
+             <result property="name" column="name"/>
+             <result property="nick_name" column="nick_name"/>
+             <result property="account_balance" column="account_balance"/>
+         </association>
+         
+         <association property="address" column="address_id" javaType="com.shop.entity.Address">
+             <id property="id" column="address_id"/>
+             <result property="address_detail" column="address_detail"/>
+             <result property="recive_phone" column="recive_phone"/>
+             <result property="recive_name" column="recive_name"/>
+             <result property="create_date" column="create_date"/>
+             <result property="open" column="open"/>
+         </association>
+    </resultMap>
+    
+    <select id="findOrderById" parameterType="int"  resultMap="OrderResultMap">
+    	select * 
+    	from order o,address ad,user su
+    	where o.address_id=ad.id and ad.open=1 and o.user_id=su.id and o.id=#{id}
+    </select>
+    
+    <resultMap type="com.shop.entity.SubOrder" id="SubOrderResultMap">
+   		 <id property="id" column="id"/>
+		 <result property="number" column="number"/>
+		 <result property="create_date" column="create_date"/>
+		 
+         <association property="order" column="order_id" javaType="com.shop.entity.Order">
+             <id property="id" column="order_id"/>
+         </association>
+         
+         <association property="goodsDetail" column="goods_detail_id" javaType="com.shop.entity.GoodsDetail">
+             <id property="id" column="goods_detail_id"/>
+             <result property="short_info" column="short_info"/>
+             <result property="pic" column="pic"/>
+             <result property="price" column="price"/>
+         </association>
+    </resultMap>
+    
+    <select id="findSubOrderByOrderId" parameterType="int"  resultMap="SubOrderResultMap">
+    	select * 
+    	from sub_order subo,goods_detail gd
+    	where subo.goods_detail_id=gd.id and gd.open=1 and subo.open=1 and subo.order_id=#{OrderId}
+    </select>
+     
+    <select id="findOrderListByUserId" parameterType="int"  resultMap="OrderResultMap">
+    	select * 
+    	from order o,address ad,user su
+    	where o.address_id=ad.id and ad.open=1 and o.user_id=su.id and o.user_id=#{userId}
+    </select>
+</mapper>

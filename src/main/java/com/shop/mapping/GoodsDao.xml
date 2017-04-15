@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.dao.GoodsDao">
+
+	<insert id="insertCategory" useGeneratedKeys="true" keyProperty="id" parameterType="com.shop.entity.Category">
+		insert ignore into category
+			(name,open)
+		values 
+			(#{name},#{open})
+	</insert>
+	
+	<update id="updateCategoryById" parameterType="com.shop.entity.Category">
+		update category
+		<set>     
+	        <if test="name!=null and name!='' ">     
+	            name = #{name},      
+	        </if>     
+	        <if test="open!=null">     
+	            open = #{open},      
+	        </if>     
+    	</set>     
+    	WHERE id = #{id};   
+	</update>
+	
+	<select id="findAllCategory" resultType="com.shop.entity.Category">
+		select 
+			id,name,open
+		from 
+			category
+		where open=1
+	</select>
+
+	<insert id="insertGoods" useGeneratedKeys="true" keyProperty="id" parameterType="com.shop.entity.Goods">
+		insert ignore into goods
+			(name,short_info,category_id,pic,open)
+		values 
+			(#{name},#{short_info},#{category.id},#{pic},#{open})
+	</insert>
+
+	<insert id="insertGoodsDetail" useGeneratedKeys="true" keyProperty="id" parameterType="com.shop.entity.GoodsDetail">
+		insert ignore into goods_detail
+			(price,short_info,number,pic,detail_info,goods_id,open)
+		values 
+			(#{price},#{short_info},#{number},#{pic},#{detail_info},#{goods.id},#{open})
+	</insert>
+	
+	<update id="updateGoodsInfo" parameterType="com.shop.entity.Goods">
+		update
+			goods
+		<set>     
+	        <if test="name!=null and name!='' ">     
+	            name = #{name},      
+	        </if>     
+	        <if test="short_info!=null and short_info!='' ">     
+	            short_info = #{short_info},      
+	        </if>     
+	        <if test="pic!=null and pic!='' ">     
+	            pic = #{pic},     
+	        </if> 
+	        <if test="open!=null ">     
+	            open = #{open},      
+	        </if> 
+	        <if test="category.id!=null ">     
+	            category_id = #{category.id},      
+	        </if> 
+    	</set>     
+    	WHERE id = #{id};  
+	</update>
+	
+	<update id="updateGoodsDeatilInfo" parameterType="com.shop.entity.GoodsDetail">
+		update
+			goods_detail
+		<set>     
+	        <if test="price!=null and price!='' ">     
+	            price = #{price},      
+	        </if>     
+	        <if test="short_info!=null and short_info!='' ">     
+	            short_info = #{short_info},      
+	        </if>     
+	        <if test="pic!=null and pic!='' ">     
+	            pic = #{pic},     
+	        </if> 
+	        <if test="open!=null ">     
+	            open = #{open},      
+	        </if> 
+	        <if test="number!=null">
+	        	number=#{number},
+	        </if>
+    	</set>     
+    	WHERE id = #{id};  
+	</update>
+
+	<resultMap type="com.shop.entity.Goods" id="GoodsResultMap">
+		 <id property="id" column="id"/>
+		 <result property="name" column="name"/>
+		 <result property="short_info" column="short_info"/>
+		 <result property="pic" column="pic"/>
+		 <result property="open" column="open"/>
+		 <result property="create_date" column="create_date"/>
+         <association property="category" column="category_id" javaType="com.shop.entity.Category">
+             <id property="id" column="category_id"/>
+         </association>
+    </resultMap>
+	
+	<select id="findGoodsListByCategoryId" parameterType="int" resultMap="GoodsResultMap">
+        SELECT
+		id,name,short_info,category_id,pic,open,create_date
+		FROM
+		goods
+		WHERE category_id=#{categoryId} and open=1;   
+   </select>
+   
+   	<resultMap type="com.shop.entity.GoodsDetail" id="GoodsDetailResultMap">
+   		 <id property="id" column="id"/>
+		 <result property="price" column="price"/>
+		 <result property="short_info" column="short_info"/>
+		 <result property="number" column="number"/>
+		 <result property="pic" column="pic"/>
+		 <result property="detail_info" column="detail_info"/>
+		 <result property="open" column="open"/>
+		 <result property="create_date" column="create_date"/>
+         <association property="goods" column="goods_id" javaType="com.shop.entity.Goods">
+             <id property="id" column="goods_id"/>
+         </association>
+    </resultMap>
+	
+	<select id="findGoodsDetailListByGoodsId" parameterType="int" resultMap="GoodsDetailResultMap">
+        SELECT
+			id,price,short_info,number,pic,detail_info,goods_id,open,create_date
+		FROM
+			goods_detail
+		WHERE goods_id=#{goodsId} and open=1;   
+   </select>
+   
+   <select id="findGoodsDetailById" parameterType="int" resultType="com.shop.entity.GoodsDetail">
+   	select 
+   		id,price,short_info,number,pic,detail_info,goods_id,open,create_date
+   	from 
+   		goods_detail
+   	where id=#{goodsDetailId} and open=1;
+   </select>
+   
+</mapper>

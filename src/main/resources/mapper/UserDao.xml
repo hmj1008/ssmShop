@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.dao.UserDao">
+
+	<!--执行插入,返回影响行数，和自增主键值给对象。
+		可以用Java对象属性对应的getter方法获取！
+		添加属性“useGeneratedKeys”和“keyProperty”, 
+		keyProperty是Java对象的属性名 -->
+	<insert id="insertUser" useGeneratedKeys="true" keyProperty="id" parameterType="com.shop.entity.User">
+		insert ignore into user(name,password,account_balance,nick_name,email,role,headimg_url,open)
+		values (#{name},
+				#{password},
+				#{account_balance},
+				#{nick_name},
+				#{email},
+				#{role},
+				#{headimg_url},
+				#{open}
+				);
+	</insert>
+	
+	<select id="findUserById" parameterType="com.shop.entity.User" resultType="com.shop.entity.User">
+		SELECT 
+		id,name,password,account_balance,nick_name,email,role,headimg_url,open
+		FROM user
+		WHERE id=#{id} and open=1; 
+	</select>
+	
+	<select id="findUserByName" parameterType="java.lang.String" resultType="int">
+		SELECT 
+		count(*)
+		FROM user
+		WHERE name=#{name} and open=1; 
+	</select>
+	
+	<select id="loginUser" parameterType="com.shop.entity.User"  resultType="com.shop.entity.User">  
+        SELECT id,name,password,nick_name,email,role,headimg_url 
+        FROM user 
+        WHERE name=#{name} and password=#{password} and open=1; 
+    </select> 
+
+	<update id="updateUserInfoById" parameterType="com.shop.entity.User">
+		update
+			user
+		<set>     
+	        <if test="nick_name!=null and nick_name!='' ">     
+	            nick_name = #{nick_name},      
+	        </if>     
+	        <if test="email!=null and email!='' ">     
+	            email = #{email},      
+	        </if>     
+	        <if test="headimg_url!=null and headimg_url!='' ">     
+	            headimg_url = #{headimg_url}     
+	        </if>    
+    	</set>     
+    	WHERE id = #{id};   
+	</update>
+	
+	<update id="updateUserPasswordById" parameterType="com.shop.entity.User">
+		update
+			user
+		<set>
+			<if test="password !=null and password != ''">
+				password=#{password}
+			</if>
+		</set>
+		WHERE id=#{id}
+	</update>
+	
+	<update id="updateUserOpenById" parameterType="com.shop.entity.User">
+		update
+			user
+		<set>
+			open=#{open}
+		</set>
+		WHERE id=#{id}
+	</update>
+	
+	<update id="updateUserAccountBalanceById" parameterType="com.shop.entity.User">
+		update
+			user
+		<set>
+			account_balance=#{account_balance}
+		</set>
+		WHERE id=#{id}
+	</update>
+</mapper>

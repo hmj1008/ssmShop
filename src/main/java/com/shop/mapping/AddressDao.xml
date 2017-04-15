@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.dao.AddressDao">
+
+	<insert id="insertAddress" useGeneratedKeys="true" keyProperty="id" parameterType="com.shop.entity.Address">
+		insert ignore into address(user_id,address_detail,recive_phone,recive_name,open)
+		values (#{user.id},
+				#{address_detail},
+				#{recive_phone},
+				#{recive_name},
+				#{open}
+				)
+	</insert>
+
+	<update id="updateAddressById" parameterType="com.shop.entity.Address">
+		update
+			address
+		<set>     
+	        <if test="address_detail!=null and address_detail!='' ">     
+	            address_detail = #{address_detail},      
+	        </if>     
+	        <if test="recive_phone!=null and recive_phone!='' ">     
+	            recive_phone = #{recive_phone},      
+	        </if>     
+	        <if test="recive_name!=null and recive_name!='' ">     
+	            recive_name = #{recive_name}     
+	        </if>    
+    	</set>     
+    	WHERE id = #{id}  
+	</update>
+
+	<update id="updateAddressOpenById" parameterType="com.shop.entity.Address">
+		update
+			address
+		<set>
+			<if test="open!=null">
+				open=#{open}
+			</if>
+		</set>
+		WHERE id=#{id};
+	</update>
+	
+	<resultMap type="com.shop.entity.Address" id="AddressResultMap">
+		 <id property="id" column="id"/>
+		 <result property="address_detail" column="address_detail"/>
+		 <result property="recive_phone" column="recive_phone"/>
+		 <result property="recive_name" column="recive_name"/>
+		 <result property="open" column="open"/>
+		 <result property="create_date" column="create_date"/>
+         <association property="user" column="user_id" javaType="com.shop.entity.User">
+             <id property="id" column="user_id"/>
+         </association>
+    </resultMap>
+	
+	<select id="findAddressesByUserId" parameterType="int" resultMap="AddressResultMap">
+        SELECT
+		id,user_id,address_detail,recive_phone,recive_name,open,create_date
+		FROM
+		address
+		WHERE user_id=#{userId} and open=1;   
+   </select>
+  
+</mapper>

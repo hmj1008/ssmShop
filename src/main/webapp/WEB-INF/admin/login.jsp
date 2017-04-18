@@ -40,11 +40,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   	function login(){
   	 	var name = $("#name").val();
   		var password = $("#password").val();
-  		console.log(name);
+  		
   		$.post(
   			 "<%=path%>/admin/login",
   			 {"name":name,"password":password},
   			 function(result){
+  			 	console.log(result);
   			 	var data = JSON.parse(result);
   				if(data["error"]){
   					alert(data["error"]);

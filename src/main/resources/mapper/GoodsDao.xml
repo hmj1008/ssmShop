@@ -87,6 +87,9 @@
 	        <if test="number!=null">
 	        	number=#{number},
 	        </if>
+	        <if test="detail_info!=null">
+	        	detail_info=#{detail_info},
+	        </if>
     	</set>     
     	WHERE id = #{id};  
 	</update>
@@ -122,6 +125,7 @@
 		WHERE goods.category_id = category.id 
    </select>
    
+   
    	<resultMap type="com.shop.entity.GoodsDetail" id="GoodsDetailResultMap">
    		 <id property="id" column="id"/>
 		 <result property="price" column="price"/>
@@ -150,6 +154,41 @@
    	from 
    		goods_detail
    	where id=#{goodsDetailId} and open=1;
+   </select>
+   
+   <resultMap type="com.shop.entity.Goods" id="GoodsDetailFollowGoods">
+   		<id property="id" column="goodsId"/>
+		 <result property="name" column="goodsName"/>
+		 <result property="short_info" column="goodsShortInfo"/>
+		 <result property="pic" column="goods_pic"/>
+		 <result property="open" column="goodsOpen"/>
+		 <result property="create_date" column="goodsCreateDate"/>
+         <association property="category" column="goodsCategoryId" javaType="com.shop.entity.Category">
+         	<id property="id" column="goodsCategoryId"/>
+            <result property="name" column="categoryName"/>
+         </association>
+         <!-- ofType指定GoodsDetail集合中的对象类型 -->
+         <collection property="listGoodsDetail" ofType="com.shop.entity.GoodsDetail">
+            <id property="id" column="goodsDetailId"/>
+            <result property="price" column="goodsDtailPrice"/>
+            <result property="short_info" column="goodsDtailShortInfo"/>
+         	<result property="number" column="goodsDtailNumber"/>
+         	<result property="pic" column="goodsDetailPic"/>
+         	<result property="detail_info" column="goodsDtailDetailInfo"/>
+         	<result property="open" column="goodsDtailDetailOpen"/>
+		 	<result property="create_date" column="goodsDtailDetailCreateDate"/>
+         </collection>
+   </resultMap>
+   
+   <select id="findAllGoodsDetailFollowGoods" resultMap="GoodsDetailFollowGoods">
+    SELECT
+		goods.id AS goodsId,goods.name As goodsName,goods.short_info As goodsShortInfo,goods.category_id As goodsCategoryId,goods.pic As goods_pic,goods.open As goodsOpen,goods.create_date As goodsCreateDate,
+		category.name AS categoryName,
+		goods_detail.id As goodsDetailId,goods_detail.price As goodsDtailPrice,goods_detail.short_info As goodsDtailShortInfo,goods_detail.number As goodsDtailNumber,
+		goods_detail.pic As goodsDetailPic,goods_detail.detail_info As goodsDtailDetailInfo, goods_detail.open As goodsDtailDetailOpen,goods_detail.create_date As goodsDtailDetailCreateDate
+	FROM
+	goods,category,goods_detail
+	WHERE goods.category_id = category.id and goods.id = goods_detail.goods_id
    </select>
    
 </mapper>

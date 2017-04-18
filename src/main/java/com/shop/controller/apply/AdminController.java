@@ -18,6 +18,7 @@ import com.shop.controller.base.BaseController;
 import com.shop.dao.GoodsDao;
 import com.shop.entity.Category;
 import com.shop.entity.Goods;
+import com.shop.entity.GoodsDetail;
 import com.shop.entity.User;
 import com.shop.service.GoodsService;
 import com.shop.service.UserService;
@@ -125,6 +126,56 @@ public class AdminController extends BaseController{
 		map = new HashMap<String, Object>();
 		map.put("i", i);
 		map.put("goods", goods);
+		writeJson(map, response);
+	}
+	
+	@RequestMapping(value="/GoodsDetailData")
+	public void GoodsDetailData(HttpServletResponse response){
+		List<Goods> listGoodsDetail = goodsDao.findAllGoodsDetailFollowGoods();
+		map = new HashMap<String, Object>();
+		map.put("listGoods", listGoodsDetail);
+		writeJson(map, response);
+	}
+	
+	@RequestMapping(value="/getGoodsDetail")
+	public void goodsDetail(GoodsDetail goodsDetail,HttpServletResponse response){
+		logger.info("查找商品详情ID==>{}",goodsDetail.getId());
+		goodsDetail = goodsDao.findGoodsDetailById(goodsDetail.getId());
+		//int i = goodsDao.updateGoodsDeatilInfo(goodsDetail);
+		logger.info("查找商品详情后==>{}",goodsDetail);
+		map = new HashMap<String, Object>();
+		map.put("data", goodsDetail);
+		writeJson(map, response);
+	}
+	
+	@RequestMapping(value="/getGoodsByCategroyId")
+	public void getGoodsByCategroyId(Category category,HttpServletResponse response){
+		logger.info("查找商品所属分类ID==>{}",category.getId());
+		List<Goods> list_goods = goodsDao.findGoodsListByCategoryId(category.getId());
+		logger.info("查找list商品后==>{}",list_goods);
+		map = new HashMap<String, Object>();
+		map.put("list_goods", list_goods);
+		writeJson(map, response);
+	}
+	
+	@RequestMapping(value="/goodsDetail_update")
+	public void goodsDetail_update(GoodsDetail goodsDetail,HttpServletResponse response){
+		logger.info("修改商品详情==>{}",goodsDetail);
+		int i = goodsDao.updateGoodsDeatilInfo(goodsDetail);
+		logger.info("修改商品详情后==>{}",i);
+		map = new HashMap<String, Object>();
+		map.put("data", i);
+		writeJson(map, response);
+	}
+	
+	@RequestMapping(value="/goodsDetail_save")
+	public void goodsDetail_save(GoodsDetail goodsDetail,HttpServletResponse response){
+		logger.info("新增商品详情==>{}",goodsDetail);
+		int i = goodsDao.insertGoodsDetail(goodsDetail);
+		logger.info("新增商品详情后==>{}",i);
+		map = new HashMap<String, Object>();
+		map.put("i", i);
+		map.put("gd", goodsDetail);
 		writeJson(map, response);
 	}
 }

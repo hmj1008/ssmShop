@@ -1,5 +1,7 @@
 package com.shop.entity;
 
+import java.util.List;
+
 public class Goods {
 	private Integer id;
 	private String name;
@@ -8,6 +10,7 @@ public class Goods {
 	private String pic;
 	private int open;
 	private String create_date;
+	private List<GoodsDetail> listGoodsDetail;
 	public Integer getId() {
 		return id;
 	}
@@ -50,8 +53,15 @@ public class Goods {
 	public void setCreate_date(String create_date) {
 		this.create_date = create_date;
 	}
+	public List<GoodsDetail> getListGoodsDetail() {
+		return listGoodsDetail;
+	}
+	public void setListGoodsDetail(List<GoodsDetail> listGoodsDetail) {
+		this.listGoodsDetail = listGoodsDetail;
+	}
 	public Goods(Integer id, String name, String short_info, Category category,
-			String pic, int open, String create_date) {
+			String pic, int open, String create_date,
+			List<GoodsDetail> listGoodsDetail) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -60,16 +70,18 @@ public class Goods {
 		this.pic = pic;
 		this.open = open;
 		this.create_date = create_date;
-	}
-	public Goods() {
-		super();
-		// TODO Auto-generated constructor stub
+		this.listGoodsDetail = listGoodsDetail;
 	}
 	@Override
 	public String toString() {
 		return "Goods [id=" + id + ", name=" + name + ", short_info="
 				+ short_info + ", category=" + category + ", pic=" + pic
-				+ ", open=" + open + ", create_date=" + create_date + "]";
+				+ ", open=" + open + ", create_date=" + create_date
+				+ ", listGoodsDetail=" + listGoodsDetail + "]";
+	}
+	public Goods() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 	
 	

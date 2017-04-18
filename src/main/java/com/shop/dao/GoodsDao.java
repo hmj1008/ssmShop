@@ -35,4 +35,5 @@ public interface GoodsDao {
 	
 	public List<Goods> findAllGoods();
 	
+	public List<Goods> findAllGoodsDetailFollowGoods();
 }

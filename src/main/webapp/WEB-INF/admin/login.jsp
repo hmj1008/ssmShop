@@ -23,6 +23,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
       <form class="form-signin">
         <h2 class="form-signin-heading">请登录</h2>
+        <div id="user_login_state" class="alert alert-error">
+			<button class="close" data-dismiss="alert">&times;</button>
+			
+		</div> 
         <input id="name" type="text" class="input-block-level" placeholder="Email address">
         <input id="password" type="password" class="input-block-level" placeholder="Password">
         <!-- 
@@ -30,31 +34,44 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           <input type="checkbox" value="remember-me"> Remember me
         </label>
          -->
-        <button class="btn btn-large btn-primary" type="submit" onclick="login()">Sign in</button>
+        <button class="btn btn-large btn-primary" id="user_login">Sign in</button>
+        
       </form>
 
     </div> <!-- /container -->
     <script src="<%=path%>/resource/vendors/jquery-1.9.1.min.js"></script>
     <script src="<%=path%>/resource/bootstrap/js/bootstrap.min.js"></script>
   	<script>
-  	function login(){
-  	 	var name = $("#name").val();
-  		var password = $("#password").val();
-  		
-  		$.post(
-  			 "<%=path%>/admin/login",
-  			 {"name":name,"password":password},
-  			 function(result){
-  			 	console.log(result);
-  			 	var data = JSON.parse(result);
-  				if(data["error"]){
-  					alert(data["error"]);
-  				}else{
-  					alert("成功登录！");
-  					window.location.reload();
-  				}
+  	 $(function() {
+  	 	$("#user_login_state").hide();
+  	 	
+	  	$("#user_login").click(function(){
+	  		$("#user_login").attr('disabled',"true");//添加disabled属性 
+	  	 	var name = $("#name").val();
+	  		var password = $("#password").val();
+	        if(name==""||password==""){
+	        	alert("账号或密码不能为空！");
+	        	$("#user_login").removeAttr("disabled"); 移除disabled属性 
+	        	return false;
+	        }
+	        $.ajax({
+		          url : "<%=path%>/admin/login",
+		          type : "POST",
+		          data :  {"name":name,"password":password},
+	            }).done(function(result){
+		  			var data = JSON.parse(result);
+		  			console.log(result);
+		  			if(data["error"]){
+		  				$("#user_login_state").append(data["error"]+"<br/>");
+		  				$("#user_login_state").show();
+		  				$("#user_login").removeAttr("disabled");
+		  			}else{
+		  				alert("成功登录！");
+		  				window.location.reload();
+		  			}
+		  		});
   		});
-  	}
+  	});
   	</script>
   </body>
 </html>

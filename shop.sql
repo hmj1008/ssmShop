@@ -130,3 +130,5 @@ CREATE TABLE `comment` (
 
 /*MEDIUMTEXT 存放最大长度为 16,777,215 个字符的字符串。*/
 ALTER TABLE goods_detail MODIFY COLUMN detail_info MEDIUMTEXT;
+/*密文存储用户密码,长度要大于60*/
+ALTER TABLE USER MODIFY COLUMN PASSWORD VARCHAR(80);

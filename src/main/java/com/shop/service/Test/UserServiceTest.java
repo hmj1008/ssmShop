@@ -26,8 +26,8 @@ public class UserServiceTest {
 	@Test
 	public void testGetSeckillList() throws Exception{
 		User user =new User();
-		user.setName("hmj_2");
-		user.setPassword("user.1234");
+		user.setName("hmj");
+		user.setPassword("hmj.1234");
 		user.setRole("normal");
 		user.setOpen(1);
 		User user2 = userService.userRegister(user);

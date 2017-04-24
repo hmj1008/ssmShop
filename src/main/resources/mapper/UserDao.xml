@@ -34,11 +34,11 @@
 		FROM user
 		WHERE name=#{name} and open=1; 
 	</select>
-	
+	<!-- and password=#{password} -->
 	<select id="loginUser" parameterType="com.shop.entity.User"  resultType="com.shop.entity.User">  
         SELECT id,name,password,nick_name,email,role,headimg_url 
         FROM user 
-        WHERE name=#{name} and password=#{password} and open=1; 
+        WHERE name=#{name} and open=1; 
     </select> 
 
 	<update id="updateUserInfoById" parameterType="com.shop.entity.User">
